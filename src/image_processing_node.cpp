@@ -25,7 +25,7 @@ int main(int argc, char** argv){
     ros::NodeHandle node;
     image_transport::ImageTransport it_(node);
 
-    image_transport::Subscriber imSub = it_.subscribe("/pathView",1, imageCallback);
+    image_transport::Subscriber imSub = it_.subscribe("/thermal",1, imageCallback);
 
     while(ros::ok()){
 
@@ -37,7 +37,32 @@ int main(int argc, char** argv){
 }
 
 void imageCallback(const sensor_msgs::ImageConstPtr& msg){
-     cv::Mat image =  cv_bridge::toCvShare(msg, "bgr8")->image;
-     cv::imshow("recievedIMAGE!",image);
-     cv::waitKey(1);
+    cv::Mat image =  cv_bridge::toCvShare(msg, "bgr8")->image;
+    cv::imshow("recievedIMAGE!",image);
+    cv::Mat gray;
+    cv::cvtColor(image, gray, CV_BGR2GRAY);
+    int left = 0;
+    int right = 0;
+    // add pixels into 2 bins: left and right.
+    for(int i = 0; i<image.cols; i++){
+        for(int j = 0; j<image.rows; j++){
+            int value = gray.at<uchar>(i, j);
+            if(i<gray.cols/2){
+                left += value;
+
+
+            }
+            else{
+                right+=value;
+            }
+        }
+    }
+    if(left>right){
+        std::cout << "left" << std::endl;
+
+    }
+    else{
+        std::cout << "right" << std::endl;
+    }
+    cv::waitKey(1);
 }

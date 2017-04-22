@@ -16,6 +16,7 @@
 
 
 void imageCallback(const sensor_msgs::ImageConstPtr& msg);
+bool lor(cv::Mat image);
 
 int main(int argc, char** argv){
     ros::init(argc, argv, "image_processing_node");
@@ -27,8 +28,17 @@ int main(int argc, char** argv){
 
     image_transport::Subscriber imSub = it_.subscribe("/thermal",1, imageCallback);
 
-    while(ros::ok()){
+    //test lor function
+    cv::Mat left, right;
+    left = cv::imread("/home/philip/catkin_ws/src/imageTutorial/src/left.jpg");
+    right = cv::imread("/home/philip/catkin_ws/src/imageTutorial/src/right.jpg");
+    cv::imshow("left", left);
+    cv::imshow("right", right);
+    cv::waitKey(1);
+    bool leftTest = lor(left);
+    bool rightTest = lor(right);
 
+    while(ros::ok()){
 
         ros::spinOnce();
     }
@@ -38,7 +48,18 @@ int main(int argc, char** argv){
 
 void imageCallback(const sensor_msgs::ImageConstPtr& msg){
     cv::Mat image =  cv_bridge::toCvShare(msg, "bgr8")->image;
-    cv::imshow("recievedIMAGE!",image);
+    bool turn = lor(image);
+    if(turn){
+        std::cout << "right" << std::endl;
+
+    }
+    else{
+        std::cout << "left" << std::endl;
+    }
+    cv::waitKey(1);
+}
+bool lor(cv::Mat image){
+    //True = right, False = left
     cv::Mat gray;
     cv::cvtColor(image, gray, CV_BGR2GRAY);
     int left = 0;
@@ -46,7 +67,7 @@ void imageCallback(const sensor_msgs::ImageConstPtr& msg){
     // add pixels into 2 bins: left and right.
     for(int i = 0; i<image.cols; i++){
         for(int j = 0; j<image.rows; j++){
-            int value = gray.at<uchar>(i, j);
+            int value = gray.at<uchar>(j, i);
             if(i<gray.cols/2){
                 left += value;
 
@@ -58,11 +79,10 @@ void imageCallback(const sensor_msgs::ImageConstPtr& msg){
         }
     }
     if(left>right){
-        std::cout << "left" << std::endl;
+        return false;
 
     }
     else{
-        std::cout << "right" << std::endl;
+        return true;
     }
-    cv::waitKey(1);
 }

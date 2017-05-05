@@ -28,6 +28,20 @@ from sensor_msgs.msg import Image
 from cv_bridge import CvBridge, CvBridgeError
 import os.path
 import base64
+
+threadRunning = False
+
+def pubThread(pub,image,bridge):
+    min = 8050
+    max = 8650
+    mCorrected = (image - min)/(max-min + 0.0)
+    mCorrected = mCorrected*255
+    cvuint8 = cv2.convertScaleAbs(mCorrected)
+
+
+    cv_image = bridge.cv2_to_imgmsg(cvuint8, "mono8")
+    pub.publish(bridge.cv2_to_imgmsg(cvuint8, "mono8"))
+
 def unsigned(n):
     return n & 0xFFFFFFFF
 

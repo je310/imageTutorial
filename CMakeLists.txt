@@ -12,7 +12,7 @@ find_package(catkin REQUIRED COMPONENTS
     image_transport
       roslib
 )
-
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 ")
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
 
@@ -131,7 +131,7 @@ include_directories(
 # add_dependencies(imageTutorial ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Declare a C++ executable
- add_executable(image_processing_node src/image_processing_node)
+ add_executable(image_processing_node src/image_processing_node src/csv.h)
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above

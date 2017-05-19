@@ -10,6 +10,7 @@
 #include <cstring>
 #include <sstream>
 #include <iostream>
+#include "csv.h"
 
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
@@ -25,11 +26,16 @@ float lorFloat(cv::Mat image);
 ros::Publisher turnPub;
 
 int main(int argc, char** argv){
+
+
+
+
+
     ros::init(argc, argv, "image_processing_node");
 
     //make strings containing the paths to the test images.
     std::string path = ros::package::getPath("imageTutorial"); // this line finds where this package is on your computer without using /philip etc
-    std::stringstream ssLeft, ssRight;
+    std::stringstream ssLeft, ssRight, ssDota;
     ssLeft << path << "/src/left.jpg";      //here we just add the ending of the path.
     ssRight << path << "/src/right.jpg";    //using a stringstream is very similar to using std::cout !
 
@@ -38,6 +44,28 @@ int main(int argc, char** argv){
         std::cout << "I do not know where imageTutorial is..." << std::endl;
         return -1;
     }
+
+
+    //practicing some Dota Code;
+    ssDota << path << "/src/dotaStats.csv";
+    io::CSVReader<2> in(ssDota.str());
+    in.read_header(io::ignore_extra_column, "A", "STR");
+    std::string A; double STR;
+    double Maxstr = 0;
+    std::string Strongest;
+    while(in.read_row(A, STR)){
+        std::cout << A<< std::endl;
+        if(STR > Maxstr) {
+            Maxstr = STR;
+            Strongest = A;
+        }
+        // do stuff with the data
+      }
+    std::cout << Strongest << " is the strongest hero with " << Maxstr << " starting strength" << std::endl;
+
+
+
+
 
     //set up ros objects
     ros::NodeHandle node;

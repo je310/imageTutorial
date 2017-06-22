@@ -133,12 +133,18 @@ include_directories(
 ## Declare a C++ executable
  add_executable(image_processing_node src/image_processing_node src/csv.h)
 
+add_executable(classify_node src/classify.cpp)
+
 ## Add cmake target dependencies of the executable
 ## same as for the library above
 # add_dependencies(imageTutorial_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
  target_link_libraries(image_processing_node
+   ${catkin_LIBRARIES}
+ )
+
+ target_link_libraries(classify_node
    ${catkin_LIBRARIES}
  )
 

@@ -37,9 +37,15 @@ std::string exec(const char* cmd) {
 }
 
 std::stringstream ssIm;
+std::vector<std::string> words;
 void imageCallback(const sensor_msgs::ImageConstPtr& msg);
 int main(int argc, char** argv){
-
+    words.push_back(" cat");
+    words.push_back("cat ");
+    words.push_back(" fox");
+    words.push_back("fox ");
+    words.push_back("kitten");
+    words.push_back("wolf");
 
 
 
@@ -81,7 +87,7 @@ void imageCallback(const sensor_msgs::ImageConstPtr& msg){
     cv::Mat image =  cv_bridge::toCvShare(msg, "bgr8")->image;
     cv::imshow("test", image);
     cv::waitKey(1);
-    std::cout << ssIm.str();
+    //std::cout << ssIm.str();
     cv::imwrite(ssIm.str(),image);
     std::stringstream cmd;
     cmd << "cd ~/caffe && ./build/examples/cpp_classification/classification.bin \
@@ -94,7 +100,20 @@ void imageCallback(const sensor_msgs::ImageConstPtr& msg){
 
 
     //std::cout << image.rows << std::endl;
-    std::cout << exec(cmd.str().c_str());
+    std::stringstream ret;
+    ret << exec(cmd.str().c_str());
+
+    std::string retStr = ret.str();
+    retStr.erase(0,50);
+    std::cout << retStr << std::endl;
+    for(int i = 0 ; i < words.size() ; i++){
+        if (ret.str().find(words[i]) != std::string::npos) {
+            std::cout << i;
+            std::cout<< "FOUND A CAT!!!!!!!!" << std::endl;
+        }
+    }
+
+
 
 }
 

@@ -4,6 +4,6 @@
         <remap from="thermal" to="image"/>
         <node name="imageView" pkg="image_view" type = "image_view" machine= "base" />
 
-        <node name="thermal" pkg="imageTutorial" type="simpleThermal.py" machine="base" />
+        <node name="thermal" pkg="imageTutorial" type="simpleThermal.py" machine="catbot" />
          <node name="procNode" pkg="imageTutorial" type="image_processing_node" machine="base" />
 </launch>

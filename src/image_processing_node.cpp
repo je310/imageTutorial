@@ -114,7 +114,7 @@ void imageCallback(const sensor_msgs::ImageConstPtr& msg){
         std::cout << "left" << std::endl;
         turningMessage.data = -1.0;
     }
-    //turningMessage.data = lorFloat(image);
+    turningMessage.data = lorFloat(image);
 
     //publish a float number for another node to use to control the robot.
     turnPub.publish(turningMessage);

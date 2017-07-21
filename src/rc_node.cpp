@@ -39,7 +39,7 @@ int main(int argc, char** argv){
     ros::NodeHandle node;
     ros::Subscriber joySub = node.subscribe("/joy",1,&joyCallback);
     turnPub = node.advertise<std_msgs::Float32>("/turn",1);
-    forwardPub = node.advertise<std_msgs::Float32>("/forward",1);
+    forwardPub = node.advertise<std_msgs::Float32>("/speed",1);
     modePub = node.advertise<std_msgs::Int32>("/mode",1);
 
 
@@ -68,8 +68,8 @@ void joyCallback(const sensor_msgs::JoyConstPtr &msg){
     std_msgs::Float32 forwardMsg;
     std_msgs::Float32 turnMsg;
     std_msgs::Int32 modeMsg;
-    forwardMsg.data = forward;
-    turnMsg.data = turn;
+    forwardMsg.data = -forward;
+    turnMsg.data = -turn;
     modeMsg.data = mode;
     if(mode == 1){
         turnPub.publish(turnMsg);

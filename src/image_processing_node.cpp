@@ -4,6 +4,7 @@
 #include <cv_bridge/cv_bridge.h>
 #include <sensor_msgs/image_encodings.h>
 #include <std_msgs/Float32.h>
+#include <std_msgs/Int32.h>
 
 #include <stdio.h>
 #include <string.h>
@@ -19,12 +20,14 @@
 
 
 void imageCallback(const sensor_msgs::ImageConstPtr& msg);
+void modeCB(const std_msgs::Int32::ConstPtr& msg);
 bool lor(cv::Mat image);
 float lorFloat(cv::Mat image);
 
 //global publisher, as we need to use it in the callback function
 ros::Publisher turnPub;
 
+int mode = 0;
 int main(int argc, char** argv){
 
 
@@ -74,6 +77,7 @@ int main(int argc, char** argv){
 
     //Subscribe to the thermal image topic.
     image_transport::Subscriber imSub = it_.subscribe("/thermal",1, imageCallback);
+    ros::Subscriber modeSub = node.subscribe("/mode",1,&modeCB);
 
     //test lor function
     cv::Mat left, right;
@@ -107,17 +111,17 @@ void imageCallback(const sensor_msgs::ImageConstPtr& msg){
     // if right do ..., else if left do...
     std_msgs::Float32 turningMessage;
     if(turn){
-        std::cout << "right" << std::endl;
+        //std::cout << "right" << std::endl;
         turningMessage.data = 1.0;
     }
     else{
-        std::cout << "left" << std::endl;
+        //std::cout << "left" << std::endl;
         turningMessage.data = -1.0;
     }
     turningMessage.data = lorFloat(image);
 
     //publish a float number for another node to use to control the robot.
-    turnPub.publish(turningMessage);
+    if(mode == 2) turnPub.publish(turningMessage);
 }
 
 bool lor(cv::Mat image){
@@ -171,4 +175,7 @@ float lorFloat(cv::Mat image){
     }
     float total = left + right;
     return (right - left)/ total;
+}
+void modeCB(const std_msgs::Int32::ConstPtr& msg){
+    mode = msg->data;
 }

@@ -11,6 +11,7 @@ find_package(catkin REQUIRED COMPONENTS
   cv_bridge
     image_transport
       roslib
+      joy
 )
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 ")
 ## System dependencies are found with CMake's conventions
@@ -135,6 +136,7 @@ include_directories(
 
 add_executable(classify_node src/classify.cpp)
 
+add_executable(rc_node src/rc_node.cpp)
 ## Add cmake target dependencies of the executable
 ## same as for the library above
 # add_dependencies(imageTutorial_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
@@ -143,6 +145,10 @@ add_executable(classify_node src/classify.cpp)
  target_link_libraries(image_processing_node
    ${catkin_LIBRARIES}
  )
+
+target_link_libraries(rc_node
+  ${catkin_LIBRARIES}
+)
 
  target_link_libraries(classify_node
    ${catkin_LIBRARIES}

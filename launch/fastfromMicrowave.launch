@@ -1,0 +1,9 @@
+<launch>
+        <machine name="base" address="microwave" env-loader="~/catkin_ws/devel_cb/env.sh" default="true" />
+        <machine name="catbot" address="catbot" env-loader="~/catkin_ws/devel/env.sh" user="catbot" />
+        <remap from="thermal" to="image"/>
+        <node name="imageView" pkg="image_view" type = "image_view" machine= "base" />
+
+        <node name="thermal" pkg="imageTutorial" type="fastSimpleThermal.py" machine="base" />
+         <node name="procNode" pkg="imageTutorial" type="image_processing_node" machine="base" />
+</launch>

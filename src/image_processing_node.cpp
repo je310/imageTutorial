@@ -4,12 +4,14 @@
 #include <cv_bridge/cv_bridge.h>
 #include <sensor_msgs/image_encodings.h>
 #include <std_msgs/Float32.h>
+#include <std_msgs/Int32.h>
 
 #include <stdio.h>
 #include <string.h>
 #include <cstring>
 #include <sstream>
 #include <iostream>
+#include "csv.h"
 
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
@@ -18,18 +20,25 @@
 
 
 void imageCallback(const sensor_msgs::ImageConstPtr& msg);
+void modeCB(const std_msgs::Int32::ConstPtr& msg);
 bool lor(cv::Mat image);
 float lorFloat(cv::Mat image);
 
 //global publisher, as we need to use it in the callback function
 ros::Publisher turnPub;
 
+int mode = 0;
 int main(int argc, char** argv){
+
+
+
+
+
     ros::init(argc, argv, "image_processing_node");
 
     //make strings containing the paths to the test images.
     std::string path = ros::package::getPath("imageTutorial"); // this line finds where this package is on your computer without using /philip etc
-    std::stringstream ssLeft, ssRight;
+    std::stringstream ssLeft, ssRight, ssDota;
     ssLeft << path << "/src/left.jpg";      //here we just add the ending of the path.
     ssRight << path << "/src/right.jpg";    //using a stringstream is very similar to using std::cout !
 
@@ -39,6 +48,28 @@ int main(int argc, char** argv){
         return -1;
     }
 
+
+    //practicing some Dota Code;
+    ssDota << path << "/src/dotaStats.csv";
+    io::CSVReader<2> in(ssDota.str());
+    in.read_header(io::ignore_extra_column, "A", "STR");
+    std::string A; double STR;
+    double Maxstr = 0;
+    std::string Strongest;
+    while(in.read_row(A, STR)){
+        std::cout << A<< std::endl;
+        if(STR > Maxstr) {
+            Maxstr = STR;
+            Strongest = A;
+        }
+        // do stuff with the data
+      }
+    std::cout << Strongest << " is the strongest hero with " << Maxstr << " starting strength" << std::endl;
+
+
+
+
+
     //set up ros objects
     ros::NodeHandle node;
     image_transport::ImageTransport it_(node);
@@ -46,6 +77,7 @@ int main(int argc, char** argv){
 
     //Subscribe to the thermal image topic.
     image_transport::Subscriber imSub = it_.subscribe("/thermal",1, imageCallback);
+    ros::Subscriber modeSub = node.subscribe("/mode",1,&modeCB);
 
     //test lor function
     cv::Mat left, right;
@@ -79,17 +111,17 @@ void imageCallback(const sensor_msgs::ImageConstPtr& msg){
     // if right do ..., else if left do...
     std_msgs::Float32 turningMessage;
     if(turn){
-        std::cout << "right" << std::endl;
+        //std::cout << "right" << std::endl;
         turningMessage.data = 1.0;
     }
     else{
-        std::cout << "left" << std::endl;
+        //std::cout << "left" << std::endl;
         turningMessage.data = -1.0;
     }
-    //turningMessage.data = lorFloat(image);
+    turningMessage.data = lorFloat(image);
 
     //publish a float number for another node to use to control the robot.
-    turnPub.publish(turningMessage);
+    if(mode == 2) turnPub.publish(turningMessage);
 }
 
 bool lor(cv::Mat image){
@@ -143,4 +175,7 @@ float lorFloat(cv::Mat image){
     }
     float total = left + right;
     return (right - left)/ total;
+}
+void modeCB(const std_msgs::Int32::ConstPtr& msg){
+    mode = msg->data;
 }

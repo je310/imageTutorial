@@ -1,0 +1,9 @@
+<launch>
+        <machine name="base" address="microwave" env-loader="~/catkin_ws/devel_cb/env.sh" default="true" />
+
+
+        <node name="joy" pkg="joy" type="joy_node" machine="base"> 
+		<param name="dev"  value="/dev/input/js1" />
+	</node>
+        <node name="rcNode" pkg="imageTutorial" type="rc_node" machine="base" />
+</launch>

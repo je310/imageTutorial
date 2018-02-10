@@ -3,7 +3,7 @@
 
 
         <node name="joy" pkg="joy" type="joy_node" machine="base"> 
-		<param name="dev"  value="/dev/input/js1" />
+		<param name="dev"  value="/dev/input/js2" />
 	</node>
         <node name="rcNode" pkg="imageTutorial" type="rc_node" machine="base" />
 </launch>

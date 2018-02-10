@@ -1,0 +1,7 @@
+<launch>
+      <machine name="catbot" address="catbot" env-loader="~/catkin_ws/devel/env.sh" user="catbot" /> 
+        <remap from="thermal" to="image"/>
+        <node name="imageView" pkg="image_view" type = "image_view" />
+
+        <node name="thermal" pkg="imageTutorial" type="simpleThermal.py" machine="catbot" />
+</launch>

@@ -1,16 +1,15 @@
 <launch>
-        <machine name="base" address="vm" env-loader="~/catkin_ws/devel/env.sh" default="true" />
+        <machine name="base" address="external" env-loader="~/catkin_ws/devel/env.sh" default="true" />
         <machine name="catbot" address="catbot" env-loader="~/catkin_ws/devel/env.sh" user="catbot" />
 
-        <node name="thermal" pkg="imageTutorial" type="simpleThermal.py" machine="catbot" />
          <node name="joy" pkg="joy" type="joy_node" machine="base">
-                <param name="dev"  value="/dev/input/js2" />
+                <param name="dev"  value="/dev/input/js0" />
         </node>
 
 	<node name="rcNode" pkg="imageTutorial" type="rc_node" machine="base" />
          <node name="procNode" pkg="imageTutorial" type="image_processing_node" machine="catbot" />
 	<node name="camera" pkg="rpi_cam" type="camera_node" machine="catbot"/>
-	<node pkg="rosserial_python" type="serial_node.py" name="serial_node" machine="catbot" args="_port:=/dev/ttyACM1 _baud:=115200"/>
-        <node name="rviz" pkg="rviz" type="rviz" args="-d /home/philip/catkin_ws/src/imageTutorial/rviz/view.rviz" />
+	<node pkg="rosserial_python" type="serial_node.py" name="serial_node" machine="catbot" args="_port:=/dev/ttyACM0 _baud:=115200"/>
+        <node name="rviz" pkg="rviz" type="rviz" args="-d ~/.rviz/catbot.rviz" />
 
 </launch>

@@ -13,6 +13,7 @@ find_package(catkin REQUIRED COMPONENTS
       roslib
       joy
 )
+find_package(OpenCV)
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 ")
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -144,6 +145,7 @@ add_executable(rc_node src/rc_node.cpp)
 ## Specify libraries to link a library or executable target against
  target_link_libraries(image_processing_node
    ${catkin_LIBRARIES}
+   ${OpenCV_LIBRARIES}
  )
 
 target_link_libraries(rc_node
@@ -152,6 +154,7 @@ target_link_libraries(rc_node
 
  target_link_libraries(classify_node
    ${catkin_LIBRARIES}
+   ${OpenCV_LIBRARIES}
  )
 
 #############
